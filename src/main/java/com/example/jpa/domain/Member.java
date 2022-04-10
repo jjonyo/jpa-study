@@ -13,7 +13,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 public class Member {
 
   @Id
@@ -29,4 +28,8 @@ public class Member {
 
   @OneToMany(mappedBy = "member")
   private List<Order> orders = new ArrayList<>();
+
+  public Member(String name) {
+    this.name = name;
+  }
 }

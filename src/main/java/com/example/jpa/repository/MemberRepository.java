@@ -1,10 +1,10 @@
 package com.example.jpa.repository;
 
 import com.example.jpa.domain.Member;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class MemberRepository {
@@ -17,7 +17,20 @@ public class MemberRepository {
     return member.getId();
   }
 
+  public List<Member> findAll() {
+    return em.createQuery("SELECT m FROM Member m", Member.class)
+        .getResultList();
+  }
+
   public Member findById(Long id){
     return em.find(Member.class, id);
   }
+
+  public List<Member> findByName(String name) {
+    return em.createQuery("SELECT m FROM Member m WHERE m.name=:name", Member.class)
+        .setParameter("name", name)
+        .getResultList();
+  }
+
+
 }
