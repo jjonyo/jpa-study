@@ -2,60 +2,42 @@ package com.example.jpa.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 import com.example.jpa.domain.Member;
-import com.example.jpa.repository.MemberRepository;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class MemberServiceTest {
 
-  @Mock
-  static MemberRepository memberRepository;
+  @Autowired
+  MemberService memberService;
 
-  @InjectMocks
-  static MemberService memberService;
+  @Test
+  @DisplayName("회원가입에 성공해야 한다.")
+  void join() {
+    Member member = new Member("user");
 
-  private Member member = new Member("user");
+    Long savedId = memberService.join(member);
+    Member savedMember = memberService.findById(savedId);
 
-
-
-//
-//  @Test
-//  @DisplayName("회원가입에 성공해야 한다.")
-//  void join() {
-//    given(memberRepository.findByName(member.getName())).willReturn(new ArrayList<>());
-//    given(memberRepository.save(member)).willReturn(1L);
-//
-//    Long savedId = memberService.join(member);
-//
-//    assertThat(savedId).isEqualTo(1L);
-//  }
+    assertThat(savedId).isEqualTo(member.getId());
+    assertThat(savedMember.getName()).isEqualTo(member.getName());
+    assertThat(savedMember).isEqualTo(member);
+  }
 
   @Test
   @DisplayName("중복된 이름이 있으면 예외가 발생해야 한다.")
   void duplicate() {
-    List<Member> findByNameReturnList = new ArrayList<>();
-    findByNameReturnList.add(new Member("user"));
+    Member member = new Member("user");
+    memberService.join(member);
 
-    
-    given(memberRepository.findByName(member.getName())).willThrow(IllegalStateException.class);
-
-
-    assertThrows(IllegalStateException.class, () -> memberService.join(member));
+    Member member2 = new Member("user");
+    assertThrows(IllegalStateException.class, () -> memberService.join(member2));
   }
 
 }
