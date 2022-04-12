@@ -29,4 +29,16 @@ public class Item {
 
   @Column
   private int stockQuantity;
+
+  public void addStock(int quantity) {
+    this.stockQuantity += quantity;
+  }
+
+  public void removeStock(int quantity) {
+    if (this.stockQuantity - quantity < 0) {
+      throw new IllegalStateException("수량은 0 이상이여야 합니다.");
+    }
+
+    this.stockQuantity -= quantity;
+  }
 }
