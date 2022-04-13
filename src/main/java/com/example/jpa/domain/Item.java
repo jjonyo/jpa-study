@@ -30,6 +30,15 @@ public class Item {
   @Column
   private int stockQuantity;
 
+  public static Item createItem(String name, int price, int stockQuantity) {
+    Item item = new Item();
+    item.setName(name);
+    item.setPrice(price);
+    item.setStockQuantity(stockQuantity);
+
+    return item;
+  }
+
   public void addStock(int quantity) {
     this.stockQuantity += quantity;
   }

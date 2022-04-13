@@ -33,4 +33,20 @@ public class OrderItem {
 
   @Column
   private int count;
+
+  public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
+    OrderItem orderItem = new OrderItem();
+
+    orderItem.setItem(item);
+    orderItem.orderPrice = orderPrice;
+    orderItem.setCount(count);
+
+    item.removeStock(count);
+
+    return orderItem;
+  }
+
+  public void cancel() {
+    getItem().addStock(count);
+  }
 }
